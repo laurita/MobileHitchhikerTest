@@ -1,57 +1,94 @@
 package com.example.mobilehitchhiker.test;
 
-import com.example.mobilehitchhiker.Constants;
-import com.example.mobilehitchhiker.MainActivity;
-import com.jayway.android.robotium.solo.Solo;
-
-import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+import com.example.mobilehitchhiker.Constants;
+import com.example.mobilehitchhiker.MainActivity;
+import com.example.mobilehitchhiker.TripMap;
+import com.jayway.android.robotium.solo.Solo;
 
 public class MainActivityTest extends
 		ActivityInstrumentationTestCase2<MainActivity> {
 
+	private static final String CLASSTAG = "MainActivityTest";
 	private MainActivity mainActivity;
+	private TripMap newActivity;
 	private Button buttonCreate;
 	private Button buttonFind;
+	private EditText startLocation;
+	private EditText endLocation;
 	private Solo mSolo;
-	private static final String CLASSTAG = "MainActivityTest";
-	
+
 	public MainActivityTest() {
 		super(com.example.mobilehitchhiker.MainActivity.class);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void setUp() throws Exception {
+		Log.v(Constants.LOGTAG, " " + MainActivityTest.CLASSTAG + " setUp");
 		super.setUp();
-
 		setActivityInitialTouchMode(false);
-
 		mainActivity = getActivity();
-
 		buttonCreate = (Button) mainActivity
-				.findViewById(com.example.mobilehitchhiker.R.id.button_create);
-
+				.findViewById(com.example.mobilehitchhiker.R.id.button_show);
 		buttonFind = (Button) mainActivity
 				.findViewById(com.example.mobilehitchhiker.R.id.button_find);
-		
+		startLocation = (EditText) mainActivity
+				.findViewById(com.example.mobilehitchhiker.R.id.start_location);
+		endLocation = (EditText) mainActivity
+				.findViewById(com.example.mobilehitchhiker.R.id.end_location);
 		mSolo = new Solo(getInstrumentation(), getActivity());
-	    Log.v(Constants.LOGTAG, " " + MainActivityTest.CLASSTAG + " setUp");
-
 	}
 
 	public void testPreConditions() {
-		assertTrue(true);
+		Log.v(Constants.LOGTAG, " " + MainActivityTest.CLASSTAG
+				+ " testPreconditions");
+		assertTrue(startLocation != null);
+		assertTrue(endLocation != null);
 		assertTrue(buttonCreate.getText().toString().equals("Create Trip"));
-		assertTrue(buttonFind.getText().toString().equals("Find Trip"));
 	} // end of testPreConditions() method definition
 
-	public void testButtonCreateTrip() {
+	public void testButtonShow() {
+		Log.v(Constants.LOGTAG, " " + MainActivityTest.CLASSTAG
+				+ " testButtonShow");
+
+		// Create Trip with empty start and end locations
 		mSolo.clickOnButton("Create Trip");
 		getInstrumentation().waitForIdleSync();
-		Activity newActivity = mSolo.getCurrentActivity();
-		assertTrue(newActivity != mainActivity);
+		mSolo.assertCurrentActivity("Activity is not correct",
+				mainActivity.getClass());
+
+		// Create Trip with empty end location
+		mSolo.clickOnButton("Continue");
+		mSolo.enterText(startLocation, "Bolzano, Italy");
+		mSolo.clickOnButton("Create Trip");
+		getInstrumentation().waitForIdleSync();
+		mSolo.assertCurrentActivity("Activity is not correct",
+				mainActivity.getClass());
+
+		// Create Trip with filled in locations
+		mSolo.clickOnButton("Continue");
+		mSolo.enterText(endLocation, "Trento, Italy");
+		mSolo.clickOnButton("Create Trip");
+		getInstrumentation().waitForIdleSync();
+		Toast t1 = Toast.makeText(this.getActivity(), "Activity:"
+				+ getActivity(), Toast.LENGTH_LONG);
+		t1.show();
+		Log.v("TESTING", "activity is " + this.getActivity());
+		newActivity = new TripMap();
+		mSolo.assertCurrentActivity("Activity is not correct",
+				newActivity.getClass());
+	}
+	
+	
+
+	@Override
+	public void tearDown() throws Exception {
+		mSolo.finishOpenedActivities();
 	}
 
 }
