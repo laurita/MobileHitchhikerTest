@@ -1,6 +1,6 @@
 package com.example.mobilehitchhiker.test;
 
-import com.example.mobilehitchhiker.Constants;
+import com.example.mobilehitchhiker.Config;
 import com.example.mobilehitchhiker.TripMap;
 import com.example.mobilehitchhiker.TripItemizedOverlay;
 import com.google.android.maps.MapView;
@@ -23,7 +23,7 @@ public class TripMapTest extends ActivityInstrumentationTestCase2<TripMap> {
 
 	@Override
 	protected void setUp() throws Exception {
-		Log.v(Constants.LOGTAG, " " + TripMapTest.CLASSTAG + " setUp");
+		Log.v(Config.LOGTAG, " " + TripMapTest.CLASSTAG + " setUp");
 		super.setUp();
 		setActivityInitialTouchMode(false);
 		thisActivity = getActivity();
@@ -31,20 +31,11 @@ public class TripMapTest extends ActivityInstrumentationTestCase2<TripMap> {
 				.findViewById(com.example.mobilehitchhiker.R.id.mapview);
 		mSolo = new Solo(getInstrumentation(), getActivity());
 	}
-	
+
 	// Tests that the MapView is not empty
 	public void testMapView() {
-		Log.v(Constants.LOGTAG, " " + TripMapTest.CLASSTAG
-				+ " testMapView");
+		Log.v(Config.LOGTAG, " " + TripMapTest.CLASSTAG + " testMapView");
 		assertTrue(mapView != null);
 	}
-	
-	// Tests that there exist an Overlay
-	public void testOverlays() {
-		Log.v(Constants.LOGTAG, " " + TripMapTest.CLASSTAG
-				+ " testOverlays");
-		assertTrue(!mapView.getOverlays().isEmpty());
-	}
-	
-	
+
 }
